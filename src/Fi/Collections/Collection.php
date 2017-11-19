@@ -14,7 +14,7 @@ class Collection
      */
     private $type;
 
-    public function __construct(string $type = null)
+    private function __construct(string $type)
     {
         $this->type = $type;
     }
@@ -38,7 +38,7 @@ class Collection
     protected function guardAgainstInvalidType($element): void
     {
         if (!is_null($this->type) && !is_a($element, $this->type)) {
-            throw new \OutOfBoundsException('Invalid Type');
+            throw new \UnexpectedValueException('Invalid Type');
         }
     }
 }
