@@ -1,0 +1,24 @@
+{
+  "name": "fi/collections",
+  "description": "A simple project to learn collections",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Fran Iglesias",
+      "email": "franiglesias@mac.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Fi\\Collections\\": ["src/Fi/Collections"],
+      "Test\\Collections\\": ["tests/Collections"]
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "6.4.4"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
+}
