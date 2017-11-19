@@ -37,7 +37,7 @@ class Collection
 
     protected function guardAgainstInvalidType($element): void
     {
-        if (!is_null($this->type) && !is_a($element, $this->type)) {
+        if (!is_a($element, $this->type)) {
             throw new \UnexpectedValueException('Invalid Type');
         }
     }
