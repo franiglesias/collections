@@ -54,6 +54,51 @@ class CollectionTest extends TestCase
         $this->assertEquals(1, $sut->count());
     }
 
+    public function test_Each_does_nothing_on_empty_collection()
+    {
+        $sut = $this->getCollection();
+        $log = '';
+        $sut->each(function() use (&$log) {
+            $log .= '*';
+        });
+        $this->assertEquals('', $log);
+    }
+
+    public function test_Each_can_iterate_one_element()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $log = '';
+        $sut->each(function() use (&$log) {
+            $log .= '*';
+        });
+        $this->assertEquals('*', $log);
+    }
+
+    public function test_Each_can_iterate_two_elements()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $sut->append($this);
+        $log = '';
+        $sut->each(function() use (&$log) {
+            $log .= '*';
+        });
+        $this->assertEquals('**', $log);
+    }
+
+    public function test_Each_element_is_passed_to_function()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $sut->append($this);
+        $log = '';
+        $sut->each(function(CollectionTest $element) use (&$log) {
+            $log .= '*';
+        });
+        $this->assertEquals('**', $log);
+    }
+
     private function getCollection(): Collection
     {
         return Collection::of(get_class($this));

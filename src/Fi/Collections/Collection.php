@@ -41,4 +41,12 @@ class Collection
             throw new \UnexpectedValueException('Invalid Type');
         }
     }
+
+    public function each(Callable $function)
+    {
+        if (!$this->count()) {
+            return;
+        }
+        array_map($function, $this->elements);
+    }
 }
