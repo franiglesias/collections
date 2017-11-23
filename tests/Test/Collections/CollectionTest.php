@@ -99,6 +99,17 @@ class CollectionTest extends TestCase
         $this->assertEquals('**', $log);
     }
 
+    public function test_Each_method_allows_pipeline()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $log = '';
+        $result = $sut->each(function(CollectionTest $element) use (&$log) {
+            $log .= '*';
+        });
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+
     private function getCollection(): Collection
     {
         return Collection::of(get_class($this));

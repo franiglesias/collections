@@ -48,5 +48,6 @@ class Collection
             return;
         }
         array_map($function, $this->elements);
+        return $this;
     }
 }
