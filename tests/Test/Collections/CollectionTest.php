@@ -110,8 +110,73 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
+    public function test_Each_method_on_empty_Collection_allows_pipeline()
+    {
+        $sut = $this->getCollection();
+        $log = '';
+        $result = $sut->each(function(CollectionTest $element) use (&$log) {
+            $log .= '*';
+        });
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+
+    public function test_Map_method_on_empty_Collection_allows_pipeline()
+    {
+        $sut = $this->getCollection();
+        $result = $sut->map(function(CollectionTest $element) {
+            return $element;
+        });
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+
+    public function test_Map_method_on_empty_Collection_returns_empty_collection()
+    {
+        $sut = $this->getCollection();
+        $result = $sut->map(function(CollectionTest $element) {
+            return $element;
+        });
+        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertEquals(0, $result->count());
+    }
+
+    public function test_Map_method_returns_another_collection()
+    {
+        $sut = $this->getCollection();
+        $result = $sut->map(function(CollectionTest $element) {
+            return $element;
+        });
+        $this->assertNotSame($sut, $result);
+    }
+
+    public function test_Map_can_map_one_element()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $result = $sut->map(function(CollectionTest $element) {
+            return new MappedObject();
+        });
+        $this->assertAttributeEquals(MappedObject::class, 'type', $result);
+        $this->assertEquals(1, $result->count());
+    }
+
+    public function test_Map_can_map_two_elements()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $sut->append($this);
+        $result = $sut->map(function(CollectionTest $element) {
+            return new MappedObject();
+        });
+        $this->assertAttributeEquals(MappedObject::class, 'type', $result);
+        $this->assertEquals(2, $result->count());
+    }
+
     private function getCollection(): Collection
     {
         return Collection::of(get_class($this));
     }
+}
+
+class MappedObject {
+
 }

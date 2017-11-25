@@ -3,6 +3,8 @@
 namespace Fi\Collections;
 
 
+use Test\Collections\MappedObject;
+
 class Collection
 {
     /**
@@ -45,9 +47,29 @@ class Collection
     public function each(Callable $function)
     {
         if (!$this->count()) {
-            return;
+            return $this;
         }
         array_map($function, $this->elements);
         return $this;
+    }
+
+    public function map(Callable $function) : Collection
+    {
+        if (!$this->count()) {
+            return clone $this;
+        }
+        $mapped = $this->instanceCollection($function);
+        while ($object = next($this->elements)) {
+            $mapped->append($function($object));
+        }
+        return $mapped;
+    }
+
+    protected function instanceCollection(Callable $function): Collection
+    {
+        $firstMapping = $function(reset($this->elements));
+        $mapped = self::of(get_class($firstMapping));
+        $mapped->append($firstMapping);
+        return $mapped;
     }
 }
