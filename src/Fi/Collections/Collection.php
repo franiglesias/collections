@@ -3,8 +3,6 @@
 namespace Fi\Collections;
 
 
-use Test\Collections\MappedObject;
-
 class Collection
 {
     /**
@@ -37,7 +35,7 @@ class Collection
         $this->elements[] = $element;
     }
 
-    protected function guardAgainstInvalidType($element): void
+    protected function guardAgainstInvalidType($element) : void
     {
         if (!is_a($element, $this->type)) {
             throw new \UnexpectedValueException('Invalid Type');
@@ -49,7 +47,9 @@ class Collection
         if (!$this->count()) {
             return $this;
         }
+
         array_map($function, $this->elements);
+
         return $this;
     }
 
@@ -58,18 +58,45 @@ class Collection
         if (!$this->count()) {
             return clone $this;
         }
-        $mapped = $this->instanceCollection($function);
+
+        $first = $function(reset($this->elements));
+        $mapped = Collection::of(get_class($first));
+        $mapped->append($first);
+
         while ($object = next($this->elements)) {
             $mapped->append($function($object));
         }
+
         return $mapped;
     }
 
-    protected function instanceCollection(Callable $function): Collection
+    public function filter(Callable $function) : Collection
     {
-        $firstMapping = $function(reset($this->elements));
-        $mapped = self::of(get_class($firstMapping));
-        $mapped->append($firstMapping);
-        return $mapped;
+        $filtered = Collection::of($this->type);
+
+        if (!$this->count()) {
+            return $filtered;
+        }
+
+        foreach ($this->elements as $element) {
+            if ($function($element)) {
+                $filtered->append($element);
+            }
+        }
+
+        return $filtered;
+    }
+
+    public function getBy(Callable $function)
+    {
+        if (!$this->count()) {
+            throw new \UnderflowException('Collection is empty');
+        }
+        foreach ($this->elements as $element) {
+            if ($function($element)) {
+                return $element;
+            }
+        }
+        throw new \OutOfBoundsException('Element not found');
     }
 }
