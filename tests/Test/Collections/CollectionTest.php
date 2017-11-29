@@ -280,6 +280,85 @@ class CollectionTest extends TestCase
         $this->assertSame($target, $result);
     }
 
+    public function test_Reduce_returns_initial_value_for_empty_collection()
+    {
+        $sut = $this->getCollection();
+        $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
+           return $acumulator + 1;
+        }, 0);
+        $this->assertEquals(0, $result);
+    }
+
+    public function test_Reduce_initial_can_be_any_type()
+    {
+        $sut = $this->getCollection();
+        $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
+            return $acumulator + 1;
+        }, "");
+        $this->assertEquals("", $result);
+    }
+
+    public function test_Reduce_applies_reduce_function_to_one_element()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
+            return $acumulator + 1;
+        }, 0);
+        $this->assertEquals(1, $result);
+    }
+
+    public function test_Reduce_applies_reduce_function_to_several_elements()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $sut->append($this);
+        $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
+            return $acumulator + 1;
+        }, 0);
+        $this->assertEquals(2, $result);
+    }
+
+    public function test_Collect_array_uses_first_element_to_instance_collection()
+    {
+        $sut = Collection::collect([
+            $this
+        ]);
+        $this->assertAttributeEquals(CollectionTest::class, 'type', $sut);
+    }
+
+    public function test_Collect_empty_array_fails_with_exception()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Collection::collect([]);
+    }
+
+    public function test_Collect_array_with_one_element_populates_collection()
+    {
+        $sut = Collection::collect([
+            $this
+        ]);
+        $this->assertEquals(1, $sut->count());
+    }
+
+    public function test_Collect_array_with_several_elements_populates_collection()
+    {
+        $sut = Collection::collect([
+            $this,
+            $this
+        ]);
+        $this->assertEquals(2, $sut->count());
+    }
+
+    public function test_Invalid_type_silently_discarded()
+    {
+        $sut = Collection::collect([
+            $this,
+            new \stdClass()
+        ]);
+        $this->assertEquals(1, $sut->count());
+    }
+
     public function isTarget()
     {
         return isset($this->target);

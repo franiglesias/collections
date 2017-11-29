@@ -3,6 +3,10 @@
 namespace Fi\Collections;
 
 
+use Prophecy\Exception\InvalidArgumentException;
+use stdClass;
+use Test\Collections\CollectionTest;
+
 class Collection
 {
     /**
@@ -37,7 +41,7 @@ class Collection
 
     protected function guardAgainstInvalidType($element) : void
     {
-        if (!is_a($element, $this->type)) {
+        if (!$this->isSupportedType($element)) {
             throw new \UnexpectedValueException('Invalid Type');
         }
     }
@@ -98,5 +102,35 @@ class Collection
             }
         }
         throw new \OutOfBoundsException('Element not found');
+    }
+
+    public function reduce(Callable $function, $initial)
+    {
+        if (!$this->count()) {
+            return $initial;
+        }
+        foreach ($this->elements as $element) {
+            $initial = $function($element, $initial);
+        }
+        return $initial;
+    }
+
+    public static function collect(array $elements) : Collection
+    {
+        if (!count($elements)) {
+            throw new \InvalidArgumentException('Can\'t collect an empty array');
+        }
+        $collection = Collection::of(get_class($elements[0]));
+        array_map(function($element) use ($collection) {
+            if ($collection->isSupportedType($element)) {
+                $collection->append($element);
+            }
+        }, $elements );
+        return $collection;
+    }
+
+    protected function isSupportedType($element) : bool
+    {
+        return is_a($element, $this->type);
     }
 }
