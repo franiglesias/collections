@@ -3,6 +3,7 @@
 namespace Fi\Collections;
 
 
+use phpDocumentor\Reflection\Types\Callable_;
 use Prophecy\Exception\InvalidArgumentException;
 use stdClass;
 use Test\Collections\CollectionTest;
@@ -115,22 +116,41 @@ class Collection
         return $initial;
     }
 
-    public static function collect(array $elements) : Collection
+    public static function collect(array $elements)
     {
         if (!count($elements)) {
             throw new \InvalidArgumentException('Can\'t collect an empty array');
         }
         $collection = Collection::of(get_class($elements[0]));
-        array_map(function($element) use ($collection) {
-            if ($collection->isSupportedType($element)) {
-                $collection->append($element);
-            }
-        }, $elements );
+        array_map(function ($element) use ($collection) {
+            $collection->append($element);
+        }, $elements);
         return $collection;
     }
 
     protected function isSupportedType($element) : bool
     {
         return is_a($element, $this->type);
+    }
+
+    public function toArray(Callable $function = null) : array
+    {
+        if (!$this->elements) {
+            return [];
+        }
+        if (!$function) {
+            return $this->elements;
+        }
+        return array_map($function, $this->elements);
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function isEmpty() : bool
+    {
+        return !$this->elements;
     }
 }

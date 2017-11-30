@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {
-
     public function test_It_Initializes()
     {
         $this->assertInstanceOf(Collection::class, $this->getCollection());
@@ -350,13 +349,64 @@ class CollectionTest extends TestCase
         $this->assertEquals(2, $sut->count());
     }
 
-    public function test_Invalid_type_silently_discarded()
+    public function test_Invalid_type_in_array_throws_exception()
     {
-        $sut = Collection::collect([
+        $this->expectException(\UnexpectedValueException::class);
+        Collection::collect([
             $this,
             new \stdClass()
         ]);
-        $this->assertEquals(1, $sut->count());
+    }
+
+    public function test_Empty_Collection_maps_to_empty_array()
+    {
+        $sut = $this->getCollection();
+        $this->assertEquals([], $sut->toArray());
+    }
+
+    public function test_Collection_can_be_returned_as_array()
+    {
+        $sample = [$this];
+        $sut = Collection::collect($sample);
+        $this->assertEquals($sample, $sut->toArray());
+    }
+
+    public function test_Collection_can_be_mapped_to_array()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $this->assertEquals(['mapped'], $sut->toArray(function(CollectionTest $element) {
+            return 'mapped';
+        }));
+    }
+
+    public function test_Collection_with_two_elements_can_be_mapped_to_array()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $sut->append($this);
+        $this->assertEquals(['mapped', 'mapped'], $sut->toArray(function(CollectionTest $element) {
+            return 'mapped';
+        }));
+    }
+
+    public function test_Collection_getType()
+    {
+        $sut = Collection::of(CollectionTest::class);
+        $this->assertEquals(CollectionTest::class, $sut->getType());
+    }
+
+    public function test_Collection_is_empty()
+    {
+        $sut = $this->getCollection();
+        $this->assertTrue($sut->isEmpty());
+    }
+
+    public function test_Collection_is_not_empty()
+    {
+        $sut = $this->getCollection();
+        $sut->append($this);
+        $this->assertFalse($sut->isEmpty());
     }
 
     public function isTarget()
