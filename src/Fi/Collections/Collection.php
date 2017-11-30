@@ -2,12 +2,6 @@
 
 namespace Fi\Collections;
 
-
-use phpDocumentor\Reflection\Types\Callable_;
-use Prophecy\Exception\InvalidArgumentException;
-use stdClass;
-use Test\Collections\CollectionTest;
-
 class Collection
 {
     /**
@@ -24,9 +18,24 @@ class Collection
         $this->type = $type;
     }
 
-    public static function of(string $type)
+    public static function of(string $type) : Collection
     {
         return new self($type);
+    }
+
+    public static function collect(array $elements)
+    {
+        if (!count($elements)) {
+            throw new \InvalidArgumentException('Can\'t collect an empty array');
+        }
+
+        $collection = Collection::of(get_class($elements[0]));
+
+        array_map(function ($element) use ($collection) {
+            $collection->append($element);
+        }, $elements);
+
+        return $collection;
     }
 
     public function count()
@@ -34,7 +43,7 @@ class Collection
         return count($this->elements);
     }
 
-    public function append($element)
+    public function append($element) : void
     {
         $this->guardAgainstInvalidType($element);
         $this->elements[] = $element;
@@ -47,9 +56,9 @@ class Collection
         }
     }
 
-    public function each(Callable $function)
+    public function each(Callable $function) : Collection
     {
-        if (!$this->count()) {
+        if ($this->isEmpty()) {
             return $this;
         }
 
@@ -60,7 +69,7 @@ class Collection
 
     public function map(Callable $function) : Collection
     {
-        if (!$this->count()) {
+        if ($this->isEmpty()) {
             return clone $this;
         }
 
@@ -77,9 +86,9 @@ class Collection
 
     public function filter(Callable $function) : Collection
     {
-        $filtered = Collection::of($this->type);
+        $filtered = Collection::of($this->getType());
 
-        if (!$this->count()) {
+        if ($this->isEmpty()) {
             return $filtered;
         }
 
@@ -94,7 +103,7 @@ class Collection
 
     public function getBy(Callable $function)
     {
-        if (!$this->count()) {
+        if ($this->isEmpty()) {
             throw new \UnderflowException('Collection is empty');
         }
         foreach ($this->elements as $element) {
@@ -107,50 +116,41 @@ class Collection
 
     public function reduce(Callable $function, $initial)
     {
-        if (!$this->count()) {
+        if ($this->isEmpty()) {
             return $initial;
         }
+
         foreach ($this->elements as $element) {
             $initial = $function($element, $initial);
         }
+
         return $initial;
-    }
-
-    public static function collect(array $elements)
-    {
-        if (!count($elements)) {
-            throw new \InvalidArgumentException('Can\'t collect an empty array');
-        }
-        $collection = Collection::of(get_class($elements[0]));
-        array_map(function ($element) use ($collection) {
-            $collection->append($element);
-        }, $elements);
-        return $collection;
-    }
-
-    protected function isSupportedType($element) : bool
-    {
-        return is_a($element, $this->type);
     }
 
     public function toArray(Callable $function = null) : array
     {
-        if (!$this->elements) {
+        if ($this->isEmpty()) {
             return [];
         }
         if (!$function) {
             return $this->elements;
         }
+
         return array_map($function, $this->elements);
     }
 
-    public function getType()
+    public function getType() : string
     {
         return $this->type;
     }
 
     public function isEmpty() : bool
     {
-        return !$this->elements;
+        return !$this->count();
+    }
+
+    protected function isSupportedType($element) : bool
+    {
+        return is_a($element, $this->getType());
     }
 }
