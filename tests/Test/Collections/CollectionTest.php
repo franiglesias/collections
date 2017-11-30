@@ -40,7 +40,7 @@ class CollectionTest extends TestCase
 
     public function test_It_can_initialize_collection_with_a_type()
     {
-        $sut = $this->getCollection();
+        $sut = Collection::of(CollectionTest::class);
         $this->assertInstanceOf(Collection::class, $sut);
     }
 
@@ -163,7 +163,7 @@ class CollectionTest extends TestCase
         $result = $sut->map(function (CollectionTest $element) {
             return new MappedObject();
         });
-        $this->assertAttributeEquals(MappedObject::class, 'type', $result);
+        $this->assertEquals(MappedObject::class, $result->getType());
         $this->assertEquals(1, $result->count());
     }
 
@@ -175,7 +175,7 @@ class CollectionTest extends TestCase
         $result = $sut->map(function (CollectionTest $element) {
             return new MappedObject();
         });
-        $this->assertAttributeEquals(MappedObject::class, 'type', $result);
+        $this->assertEquals(MappedObject::class, $result->getType());
         $this->assertEquals(2, $result->count());
     }
 
@@ -203,7 +203,7 @@ class CollectionTest extends TestCase
         $result = $sut->filter(function (CollectionTest $element) {
             return false;
         });
-        $this->assertAttributeEquals(CollectionTest::class, 'type', $result);
+        $this->assertEquals(CollectionTest::class, $result->getType());
     }
 
     public function test_Filter_include_element_if_filter_function_returns_true()
@@ -323,7 +323,7 @@ class CollectionTest extends TestCase
         $sut = Collection::collect([
             $this
         ]);
-        $this->assertAttributeEquals(CollectionTest::class, 'type', $sut);
+        $this->assertEquals(CollectionTest::class, $sut->getType());
     }
 
     public function test_Collect_empty_array_fails_with_exception()
