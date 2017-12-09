@@ -11,8 +11,9 @@
   ],
   "autoload": {
     "psr-4": {
-      "Fi\\Collections\\": ["src/Fi/Collections"],
-      "Test\\Collections\\": ["tests/Collections"]
+      "Fi\\Collections\\": ["src/Fi/Collections/"],
+      "Fi\\Playground\\": ["src/Fi/Playground/"],
+      "Test\\Collections\\": ["tests/"]
     }
   },
   "require-dev": {

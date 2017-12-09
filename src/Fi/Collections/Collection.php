@@ -18,18 +18,18 @@ class Collection
         $this->type = $type;
     }
 
-    public static function of(string $type) : Collection
+    public static function of(string $type) : self
     {
-        return new self($type);
+        return new static($type);
     }
 
-    public static function collect(array $elements)
+    public static function collect(array $elements) : self
     {
         if (!count($elements)) {
             throw new \InvalidArgumentException('Can\'t collect an empty array');
         }
 
-        $collection = Collection::of(get_class($elements[0]));
+        $collection = static::of(get_class($elements[0]));
 
         array_map(function ($element) use ($collection) {
             $collection->append($element);
@@ -74,7 +74,7 @@ class Collection
         }
 
         $first = $function(reset($this->elements));
-        $mapped = Collection::of(get_class($first));
+        $mapped = static::of(get_class($first));
         $mapped->append($first);
 
         while ($object = next($this->elements)) {
@@ -86,7 +86,7 @@ class Collection
 
     public function filter(Callable $function) : Collection
     {
-        $filtered = Collection::of($this->getType());
+        $filtered = static::of($this->getType());
 
         if ($this->isEmpty()) {
             return $filtered;
