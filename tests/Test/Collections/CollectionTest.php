@@ -161,9 +161,9 @@ class CollectionTest extends TestCase
         $sut = $this->getCollection();
         $sut->append($this);
         $result = $sut->map(function (CollectionTest $element) {
-            return new MappedObject();
+            return new self();
         });
-        $this->assertEquals(MappedObject::class, $result->getType());
+        $this->assertEquals(self::class, $result->getType());
         $this->assertEquals(1, $result->count());
     }
 
@@ -173,9 +173,9 @@ class CollectionTest extends TestCase
         $sut->append($this);
         $sut->append($this);
         $result = $sut->map(function (CollectionTest $element) {
-            return new MappedObject();
+            return new self();
         });
-        $this->assertEquals(MappedObject::class, $result->getType());
+        $this->assertEquals(self::class, $result->getType());
         $this->assertEquals(2, $result->count());
     }
 
@@ -413,9 +413,4 @@ class CollectionTest extends TestCase
     {
         return isset($this->target);
     }
-}
-
-class MappedObject
-{
-
 }
