@@ -25,7 +25,7 @@ class Collection
 
     public static function ofType(string $type): self
     {
-        return new static($type);
+        return new self($type);
     }
 
     public static function collect(array $elements): self
@@ -34,7 +34,7 @@ class Collection
             throw new InvalidArgumentException('Can\'t collect an empty array');
         }
 
-        $collection = static::ofType(self::getTypeOrClassOfElement(($elements[0])));
+        $collection = self::ofType(self::getTypeOrClassOfElement($elements[0]));
 
         array_map(function ($element) use ($collection) {
             $collection->append($element);
@@ -79,7 +79,7 @@ class Collection
         }
 
         $first = $function(reset($this->elements));
-        $mapped = static::ofType(get_class($first));
+        $mapped = self::ofType(self::getTypeOrClassOfElement($first));
         $mapped->append($first);
 
         while ($object = next($this->elements)) {
@@ -91,7 +91,7 @@ class Collection
 
     public function filter(callable $function): Collection
     {
-        $filtered = static::ofType($this->getType());
+        $filtered = self::ofType($this->getType());
 
         if ($this->isEmpty()) {
             return $filtered;
