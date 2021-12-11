@@ -9,14 +9,8 @@ use OutOfBoundsException;
 
 class Collection
 {
-    /**
-     * @var array
-     */
-    private $elements = [];
-    /**
-     * @var string
-     */
-    private $type;
+    private array $elements = [];
+    private string $type;
 
     private function __construct(string $type)
     {
@@ -48,13 +42,13 @@ class Collection
         return count($this->elements);
     }
 
-    public function append($element): void
+    public function append(mixed $element): void
     {
         $this->guardAgainstInvalidType($element);
         $this->elements[] = $element;
     }
 
-    protected function guardAgainstInvalidType($element): void
+    protected function guardAgainstInvalidType(mixed $element): void
     {
         if (!$this->isSupportedType($element)) {
             throw new UnexpectedValueException('Invalid Type');
@@ -106,7 +100,7 @@ class Collection
         return $filtered;
     }
 
-    public function getBy(callable $function)
+    public function getBy(callable $function): mixed
     {
         if ($this->isEmpty()) {
             throw new UnderflowException('Collection is empty');
@@ -119,7 +113,7 @@ class Collection
         throw new OutOfBoundsException('Element not found');
     }
 
-    public function reduce(callable $function, $initial)
+    public function reduce(callable $function, mixed $initial): mixed
     {
         if ($this->isEmpty()) {
             return $initial;
@@ -154,22 +148,24 @@ class Collection
         return !$this->count();
     }
 
-    protected function isSupportedType($element): bool
+    protected function isSupportedType(mixed $element): bool
     {
         $elementType = gettype($element);
 
         if ($elementType === 'object') {
+            /** @var object $element */
             return is_a($element, $this->getType());
         }
 
         return $elementType === $this->getType();
     }
 
-    protected function getTypeOrClassOfElement($element): string
+    protected static function getTypeOrClassOfElement(mixed $element): string
     {
         $elementType = gettype($element);
 
         if ($elementType === 'object') {
+            /** @var object $element */
             return get_class($element);
         }
 

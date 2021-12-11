@@ -4,14 +4,8 @@ namespace Fi\Playground;
 
 class Password
 {
-    /**
-     * @var string
-     */
-    private $password;
+    private string $password;
 
-    /**
-     * Password constructor.
-     */
     public function __construct(string $password)
     {
         $this->password = $password;
