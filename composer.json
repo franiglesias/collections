@@ -13,7 +13,7 @@
     "psr-4": {
       "Fi\\Collections\\": ["src/Fi/Collections/"],
       "Fi\\Playground\\": ["src/Fi/Playground/"],
-      "Test\\Collections\\": ["tests/"]
+      "Test\\Collections\\": ["tests/Collections"]
     }
   },
   "require": {
