@@ -23,14 +23,14 @@ class CollectionTest extends TestCase
         $this->assertEquals(0, $sut->count());
     }
 
-    public function testItCanTpendOneElement(): void
+    public function testItCanAppendOneElement(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $this->assertEquals(1, $sut->count());
     }
 
-    public function testItCanTpendTwoElements(): void
+    public function testItCanAppendTwoElements(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -38,9 +38,9 @@ class CollectionTest extends TestCase
         $this->assertEquals(2, $sut->count());
     }
 
-    public function testItCanTitializeCollectionWithAType(): void
+    public function testItCanInitializeCollectionWithAType(): void
     {
-        $sut = Collection::ofType(CollectionTest::class);
+        $sut = Collection::ofType(__CLASS__);
         $this->assertInstanceOf(Collection::class, $sut);
     }
 
@@ -55,12 +55,12 @@ class CollectionTest extends TestCase
 
     public function testItCanStorePrimitiveType(): void
     {
-        $sut = $sut = Collection::ofType('string');
+        $sut = Collection::ofType('string');
         $sut->append('me');
         $this->assertEquals(1, $sut->count());
     }
 
-    public function testItCanToreSubclasessOfTheType(): void
+    public function testItCanStoreSubclasessOfTheType(): void
     {
         $sut = $this->getCollection();
         $sut->append(new class extends CollectionTest
@@ -210,7 +210,7 @@ class CollectionTest extends TestCase
         $result = $sut->filter(function (CollectionTest $element) {
             return false;
         });
-        $this->assertEquals(CollectionTest::class, $result->getType());
+        $this->assertEquals(__CLASS__, $result->getType());
     }
 
     public function testFilterIncludeElementIfFilterFunctionReturnsTrue(): void
@@ -330,7 +330,7 @@ class CollectionTest extends TestCase
         $sut = Collection::collect([
             $this
         ]);
-        $this->assertEquals(CollectionTest::class, $sut->getType());
+        $this->assertEquals(__CLASS__, $sut->getType());
     }
 
     public function testCollectEmptyArrayFailsWithException(): void
@@ -399,8 +399,8 @@ class CollectionTest extends TestCase
 
     public function testCollectionGetType(): void
     {
-        $sut = Collection::ofType(CollectionTest::class);
-        $this->assertEquals(CollectionTest::class, $sut->getType());
+        $sut = Collection::ofType(__CLASS__);
+        $this->assertEquals(__CLASS__, $sut->getType());
     }
 
     public function testCollectionIsEmpty(): void

@@ -30,7 +30,7 @@ class Collection
 
         $collection = self::ofType(self::getTypeOrClassOfElement($elements[0]));
 
-        array_map(function ($element) use ($collection) {
+        array_map(static function ($element) use ($collection) {
             $collection->append($element);
         }, $elements);
 

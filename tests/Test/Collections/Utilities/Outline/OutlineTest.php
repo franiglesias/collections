@@ -15,7 +15,7 @@ class OutlineTest extends TestCase
     public function testItCanNotBeInitializedEmpty(): void
     {
         $this->expectException(\TypeError::class);
-        new Outline();
+        $sut = new Outline(null);
     }
 
     public function testItReturnNullIfEmptyArray(): void

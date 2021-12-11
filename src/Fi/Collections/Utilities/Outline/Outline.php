@@ -25,7 +25,7 @@ class Outline
     {
         $segment = array_shift($segments);
 
-        if (count($segments) && isset($array[$segment])) {
+        if (isset($array[$segment]) && count($segments)) {
             return $this->extractArray($array[$segment], $segments);
         }
         return $array[$segment];
