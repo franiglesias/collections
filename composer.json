@@ -16,8 +16,11 @@
       "Test\\Collections\\": ["tests/"]
     }
   },
+  "require": {
+    "php": ">=7.4"
+  },
   "require-dev": {
-    "phpunit/phpunit": "6.4.4"
+    "phpunit/phpunit": "^9"
   },
   "config": {
     "bin-dir": "bin/"
