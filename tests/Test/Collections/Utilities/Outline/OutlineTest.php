@@ -7,24 +7,24 @@ use PHPUnit\Framework\TestCase;
 
 class OutlineTest extends TestCase
 {
-    public function testItInitializes()
+    public function testItInitializes(): void
     {
         $this->assertInstanceOf(Outline::class, new Outline([]));
     }
 
-    public function testItCanNotBeInitializedEmpty()
+    public function testItCanNotBeInitializedEmpty(): void
     {
         $this->expectException(\TypeError::class);
         new Outline();
     }
 
-    public function testItReturnNullIfEmptyArray()
+    public function testItReturnNullIfEmptyArray(): void
     {
         $sut = new Outline([]);
         $this->assertNull($sut->extract(''));
     }
 
-    public function testItCanExtractOneLevelPath()
+    public function testItCanExtractOneLevelPath(): void
     {
         $array = [
             'path' => 'value'
@@ -33,7 +33,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('value', $sut->extract('path'));
     }
 
-    public function testItCanExtractTwoLevelsPath()
+    public function testItCanExtractTwoLevelsPath(): void
     {
         $array = [
             'path' => [
@@ -44,7 +44,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('value2', $sut->extract('path.path2'));
     }
 
-    public function testItCanExtractSeveralLevelsPath()
+    public function testItCanExtractSeveralLevelsPath(): void
     {
         $array = [
             'path' => [
@@ -60,7 +60,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('theValue', $sut->extract('path.path3.path4.path5'));
     }
 
-    public function testItCanSelectElementInArray()
+    public function testItCanSelectElementInArray(): void
     {
         $array = [
             'path' => 'value',
@@ -76,7 +76,7 @@ class OutlineTest extends TestCase
         $this->assertEquals(['value3'], $sut->extract('path2.0.path3'));
     }
 
-    public function testItCanReturnAnArray()
+    public function testItCanReturnAnArray(): void
     {
         $array = [
             'path' => 'value',
