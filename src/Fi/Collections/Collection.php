@@ -18,12 +18,12 @@ class Collection
         $this->type = $type;
     }
 
-    public static function of(string $type) : self
+    public static function of(string $type): self
     {
         return new static($type);
     }
 
-    public static function collect(array $elements) : self
+    public static function collect(array $elements): self
     {
         if (!count($elements)) {
             throw new \InvalidArgumentException('Can\'t collect an empty array');
@@ -38,25 +38,25 @@ class Collection
         return $collection;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->elements);
     }
 
-    public function append($element) : void
+    public function append($element): void
     {
         $this->guardAgainstInvalidType($element);
         $this->elements[] = $element;
     }
 
-    protected function guardAgainstInvalidType($element) : void
+    protected function guardAgainstInvalidType($element): void
     {
         if (!$this->isSupportedType($element)) {
             throw new \UnexpectedValueException('Invalid Type');
         }
     }
 
-    public function each(Callable $function) : Collection
+    public function each(callable $function): Collection
     {
         if ($this->isEmpty()) {
             return $this;
@@ -67,7 +67,7 @@ class Collection
         return $this;
     }
 
-    public function map(Callable $function) : Collection
+    public function map(callable $function): Collection
     {
         if ($this->isEmpty()) {
             return clone $this;
@@ -84,7 +84,7 @@ class Collection
         return $mapped;
     }
 
-    public function filter(Callable $function) : Collection
+    public function filter(callable $function): Collection
     {
         $filtered = static::of($this->getType());
 
@@ -101,7 +101,7 @@ class Collection
         return $filtered;
     }
 
-    public function getBy(Callable $function)
+    public function getBy(callable $function)
     {
         if ($this->isEmpty()) {
             throw new \UnderflowException('Collection is empty');
@@ -114,7 +114,7 @@ class Collection
         throw new \OutOfBoundsException('Element not found');
     }
 
-    public function reduce(Callable $function, $initial)
+    public function reduce(callable $function, $initial)
     {
         if ($this->isEmpty()) {
             return $initial;
@@ -127,7 +127,7 @@ class Collection
         return $initial;
     }
 
-    public function toArray(Callable $function = null) : array
+    public function toArray(callable $function = null): array
     {
         if ($this->isEmpty()) {
             return [];
@@ -139,17 +139,17 @@ class Collection
         return array_map($function, $this->elements);
     }
 
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return !$this->count();
     }
 
-    protected function isSupportedType($element) : bool
+    protected function isSupportedType($element): bool
     {
         return is_a($element, $this->getType());
     }

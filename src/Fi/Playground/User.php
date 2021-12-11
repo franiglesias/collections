@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: frankie
- * Date: 8/12/17
- * Time: 20:40
- */
 
 namespace Fi\Playground;
 
@@ -30,7 +24,7 @@ class User
         $this->password = $password;
     }
 
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->email->getEmail();
     }

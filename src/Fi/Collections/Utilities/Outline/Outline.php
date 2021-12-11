@@ -2,7 +2,6 @@
 
 namespace Fi\Collections\Utilities\Outline;
 
-
 class Outline
 {
     /**
@@ -17,7 +16,7 @@ class Outline
 
     public function extract($path)
     {
-        if(empty($this->array)) {
+        if (empty($this->array)) {
             return null;
         }
         $segments = explode('.', $path);
@@ -34,5 +33,4 @@ class Outline
         }
         return $array[$segment];
     }
-
 }
