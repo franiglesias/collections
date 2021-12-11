@@ -156,6 +156,12 @@ class Collection
 
     protected function isSupportedType($element): bool
     {
-        return is_a($element, $this->getType());
+        $elementType = gettype($element);
+
+        if ($elementType === 'object') {
+            return is_a($element, $this->getType());
+        }
+
+        return $elementType === $this->getType();
     }
 }

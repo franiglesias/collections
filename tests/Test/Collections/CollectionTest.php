@@ -53,6 +53,13 @@ class CollectionTest extends TestCase
         });
     }
 
+    public function testItCanStorePrimitiveType()
+    {
+        $sut = $sut = Collection::ofType('string');
+        $sut->append('me');
+        $this->assertEquals(1, $sut->count());
+    }
+
     public function testItCanToreSubclasessOfTheType()
     {
         $sut = $this->getCollection();
