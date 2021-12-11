@@ -34,7 +34,7 @@ class Collection
             throw new InvalidArgumentException('Can\'t collect an empty array');
         }
 
-        $collection = static::ofType(get_class($elements[0]));
+        $collection = static::ofType(self::getTypeOrClassOfElement(($elements[0])));
 
         array_map(function ($element) use ($collection) {
             $collection->append($element);
@@ -163,5 +163,16 @@ class Collection
         }
 
         return $elementType === $this->getType();
+    }
+
+    protected function getTypeOrClassOfElement($element): string
+    {
+        $elementType = gettype($element);
+
+        if ($elementType === 'object') {
+            return get_class($element);
+        }
+
+        return $elementType;
     }
 }
