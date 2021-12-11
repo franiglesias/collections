@@ -14,7 +14,7 @@ class CollectionTest extends TestCase
 
     private function getCollection(): Collection
     {
-        return Collection::of(get_class($this));
+        return Collection::ofType(get_class($this));
     }
 
     public function testItContTnsZeroItemsOnCreation()
@@ -40,7 +40,7 @@ class CollectionTest extends TestCase
 
     public function testItCanTitializeCollectionWithAType()
     {
-        $sut = Collection::of(CollectionTest::class);
+        $sut = Collection::ofType(CollectionTest::class);
         $this->assertInstanceOf(Collection::class, $sut);
     }
 
@@ -392,7 +392,7 @@ class CollectionTest extends TestCase
 
     public function testCollectionGetType()
     {
-        $sut = Collection::of(CollectionTest::class);
+        $sut = Collection::ofType(CollectionTest::class);
         $this->assertEquals(CollectionTest::class, $sut->getType());
     }
 
