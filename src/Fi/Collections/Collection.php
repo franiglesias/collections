@@ -7,7 +7,7 @@ class Collection
     /**
      * @var array
      */
-    private $elements;
+    private $elements = [];
     /**
      * @var string
      */
