@@ -2,10 +2,10 @@
 
 namespace Fi\Collections;
 
-use InvalidArgumentException,
-    UnexpectedValueException,
-    UnderflowException,
-    OutOfBoundsException;
+use InvalidArgumentException;
+use UnexpectedValueException;
+use UnderflowException;
+use OutOfBoundsException;
 
 class Collection
 {
