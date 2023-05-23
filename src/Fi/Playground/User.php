@@ -1,27 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: frankie
- * Date: 8/12/17
- * Time: 20:40
- */
 
 namespace Fi\Playground;
 
 class User
 {
-    /**
-     * @var RealName
-     */
-    private $realName;
-    /**
-     * @var Email
-     */
-    private $email;
-    /**
-     * @var Password
-     */
-    private $password;
+    private RealName $realName;
+    private Email $email;
+    private Password $password;
 
     public function __construct(RealName $realName, Email $email, Password $password)
     {
@@ -30,12 +15,12 @@ class User
         $this->password = $password;
     }
 
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->email->getEmail();
     }
 
-    public function getEmailDomain()
+    public function getEmailDomain(): string
     {
         return substr($this->getEmail(), strpos($this->getEmail(), '@') + 1);
     }

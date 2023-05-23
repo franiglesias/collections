@@ -2,22 +2,18 @@
 
 namespace Fi\Collections\Utilities\Outline;
 
-
 class Outline
 {
-    /**
-     * @var array
-     */
-    private $array;
+    private array $array;
 
     public function __construct(array $array)
     {
         $this->array = $array;
     }
 
-    public function extract($path)
+    public function extract(string $path): ?string
     {
-        if(empty($this->array)) {
+        if (empty($this->array)) {
             return null;
         }
         $segments = explode('.', $path);
@@ -25,14 +21,13 @@ class Outline
         return $this->extractArray($this->array, (array) $segments);
     }
 
-    private function extractArray($array, $segments)
+    private function extractArray(array $array, array $segments): string
     {
         $segment = array_shift($segments);
 
-        if (count($segments) && isset($array[$segment])) {
+        if (isset($array[$segment]) && count($segments)) {
             return $this->extractArray($array[$segment], $segments);
         }
         return $array[$segment];
     }
-
 }

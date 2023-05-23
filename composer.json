@@ -13,13 +13,19 @@
     "psr-4": {
       "Fi\\Collections\\": ["src/Fi/Collections/"],
       "Fi\\Playground\\": ["src/Fi/Playground/"],
-      "Test\\Collections\\": ["tests/"]
+      "Test\\Collections\\": ["tests/Collections"]
     }
   },
+  "require": {
+    "php": ">=8.0"
+  },
   "require-dev": {
-    "phpunit/phpunit": "6.4.4"
+    "phpunit/phpunit": "^9"
   },
   "config": {
-    "bin-dir": "bin/"
+    "bin-dir": "bin/",
+    "platform": {
+      "php": "8.0"
+    }
   }
 }

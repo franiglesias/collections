@@ -2,61 +2,60 @@
 
 namespace Fi\Collections;
 
+use InvalidArgumentException;
+use UnexpectedValueException;
+use UnderflowException;
+use OutOfBoundsException;
+
 class Collection
 {
-    /**
-     * @var array
-     */
-    private $elements;
-    /**
-     * @var string
-     */
-    private $type;
+    private array $elements = [];
+    private string $type;
 
     private function __construct(string $type)
     {
         $this->type = $type;
     }
 
-    public static function of(string $type) : self
+    public static function ofType(string $type): self
     {
-        return new static($type);
+        return new self($type);
     }
 
-    public static function collect(array $elements) : self
+    public static function collect(array $elements): self
     {
         if (!count($elements)) {
-            throw new \InvalidArgumentException('Can\'t collect an empty array');
+            throw new InvalidArgumentException('Can\'t collect an empty array');
         }
 
-        $collection = static::of(get_class($elements[0]));
+        $collection = self::ofType(self::getTypeOrClassOfElement($elements[0]));
 
-        array_map(function ($element) use ($collection) {
+        array_map(static function ($element) use ($collection) {
             $collection->append($element);
         }, $elements);
 
         return $collection;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->elements);
     }
 
-    public function append($element) : void
+    public function append(mixed $element): void
     {
         $this->guardAgainstInvalidType($element);
         $this->elements[] = $element;
     }
 
-    protected function guardAgainstInvalidType($element) : void
+    protected function guardAgainstInvalidType(mixed $element): void
     {
         if (!$this->isSupportedType($element)) {
-            throw new \UnexpectedValueException('Invalid Type');
+            throw new UnexpectedValueException('Invalid Type');
         }
     }
 
-    public function each(Callable $function) : Collection
+    public function each(callable $function): Collection
     {
         if ($this->isEmpty()) {
             return $this;
@@ -67,14 +66,14 @@ class Collection
         return $this;
     }
 
-    public function map(Callable $function) : Collection
+    public function map(callable $function): Collection
     {
         if ($this->isEmpty()) {
             return clone $this;
         }
 
         $first = $function(reset($this->elements));
-        $mapped = static::of(get_class($first));
+        $mapped = self::ofType(self::getTypeOrClassOfElement($first));
         $mapped->append($first);
 
         while ($object = next($this->elements)) {
@@ -84,9 +83,9 @@ class Collection
         return $mapped;
     }
 
-    public function filter(Callable $function) : Collection
+    public function filter(callable $function): Collection
     {
-        $filtered = static::of($this->getType());
+        $filtered = self::ofType($this->getType());
 
         if ($this->isEmpty()) {
             return $filtered;
@@ -101,20 +100,20 @@ class Collection
         return $filtered;
     }
 
-    public function getBy(Callable $function)
+    public function getBy(callable $function): mixed
     {
         if ($this->isEmpty()) {
-            throw new \UnderflowException('Collection is empty');
+            throw new UnderflowException('Collection is empty');
         }
         foreach ($this->elements as $element) {
             if ($function($element)) {
                 return $element;
             }
         }
-        throw new \OutOfBoundsException('Element not found');
+        throw new OutOfBoundsException('Element not found');
     }
 
-    public function reduce(Callable $function, $initial)
+    public function reduce(callable $function, mixed $initial): mixed
     {
         if ($this->isEmpty()) {
             return $initial;
@@ -127,7 +126,7 @@ class Collection
         return $initial;
     }
 
-    public function toArray(Callable $function = null) : array
+    public function toArray(callable $function = null): array
     {
         if ($this->isEmpty()) {
             return [];
@@ -139,18 +138,37 @@ class Collection
         return array_map($function, $this->elements);
     }
 
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return !$this->count();
     }
 
-    protected function isSupportedType($element) : bool
+    protected function isSupportedType(mixed $element): bool
     {
-        return is_a($element, $this->getType());
+        $elementType = gettype($element);
+
+        if ($elementType === 'object') {
+            /** @var object $element */
+            return is_a($element, $this->getType());
+        }
+
+        return $elementType === $this->getType();
+    }
+
+    protected static function getTypeOrClassOfElement(mixed $element): string
+    {
+        $elementType = gettype($element);
+
+        if ($elementType === 'object') {
+            /** @var object $element */
+            return get_class($element);
+        }
+
+        return $elementType;
     }
 }

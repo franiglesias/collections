@@ -7,24 +7,24 @@ use PHPUnit\Framework\TestCase;
 
 class OutlineTest extends TestCase
 {
-    public function test_It_initializes()
+    public function testItInitializes(): void
     {
         $this->assertInstanceOf(Outline::class, new Outline([]));
     }
 
-    public function test_it_can_not_be_initialized_empty()
+    public function testItCanNotBeInitializedEmpty(): void
     {
         $this->expectException(\TypeError::class);
-        new Outline();
+        $sut = new Outline(null);
     }
 
-    public function test_it_return_null_if_empty_array()
+    public function testItReturnNullIfEmptyArray(): void
     {
         $sut = new Outline([]);
         $this->assertNull($sut->extract(''));
     }
 
-    public function test_it_can_extract_one_level_path()
+    public function testItCanExtractOneLevelPath(): void
     {
         $array = [
             'path' => 'value'
@@ -33,7 +33,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('value', $sut->extract('path'));
     }
 
-    public function test_it_can_extract_two_levels_path()
+    public function testItCanExtractTwoLevelsPath(): void
     {
         $array = [
             'path' => [
@@ -44,7 +44,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('value2', $sut->extract('path.path2'));
     }
 
-    public function test_it_can_extract_several_levels_path()
+    public function testItCanExtractSeveralLevelsPath(): void
     {
         $array = [
             'path' => [
@@ -60,7 +60,7 @@ class OutlineTest extends TestCase
         $this->assertEquals('theValue', $sut->extract('path.path3.path4.path5'));
     }
 
-    public function test_it_can_select_element_in_array()
+    public function testItCanSelectElementInArray(): void
     {
         $array = [
             'path' => 'value',
@@ -76,7 +76,7 @@ class OutlineTest extends TestCase
         $this->assertEquals(['value3'], $sut->extract('path2.0.path3'));
     }
 
-    public function test_it_can_return_an_array()
+    public function testItCanReturnAnArray(): void
     {
         $array = [
             'path' => 'value',

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: frankie
- * Date: 8/12/17
- * Time: 20:32
- */
 
 namespace Test\Playground;
 
@@ -18,14 +12,14 @@ use PHPUnit\Framework\TestCase;
 class UserCollectionTest extends TestCase
 {
 
-    public function test_ItCanCreateUserCollection()
+    public function testItCanCreateUserCollection(): void
     {
         $sut = $this->createACollection();
         $this->assertEquals(5, $sut->count());
         $this->assertEquals(User::class, $sut->getType());
     }
 
-    public function test_ItCanGetAUserByEmail()
+    public function testItCanGetAUserByEmail(): void
     {
         $sut = $this->createACollection();
         $getByEmail = function (User $user) {
@@ -36,7 +30,7 @@ class UserCollectionTest extends TestCase
         $this->assertEquals($expected, $user);
     }
 
-    public function test_ItCanFilterCollection()
+    public function testItCanFilterCollection(): void
     {
         $sut = $this->createACollection();
         $filterByEmailDomain = function (User $user) {
@@ -45,10 +39,9 @@ class UserCollectionTest extends TestCase
         $filtered = $sut->filter($filterByEmailDomain);
         $expected = Collection::collect([$this->getuser('Fran', 'Iglesias', 'franiglesias@mac.com', 'password')]);
         $this->assertEquals($expected, $filtered);
-
     }
 
-    private function getuser($firstname, $lastname, $email, $password) : User
+    private function getuser(string $firstname, string $lastname, string $email, string $password): User
     {
         return new User(
             new RealName($firstname, $lastname),
@@ -57,7 +50,7 @@ class UserCollectionTest extends TestCase
         );
     }
 
-    private function createACollection() : Collection
+    private function createACollection(): Collection
     {
         $users = [
             $this->getuser('Fran', 'Iglesias', 'franiglesias@mac.com', 'password'),

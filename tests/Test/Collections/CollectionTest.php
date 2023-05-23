@@ -7,30 +7,30 @@ use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {
-    public function test_It_Initializes()
+    public function testItInitiTes(): void
     {
         $this->assertInstanceOf(Collection::class, $this->getCollection());
     }
 
-    private function getCollection() : Collection
+    private function getCollection(): Collection
     {
-        return Collection::of(get_class($this));
+        return Collection::ofType(get_class($this));
     }
 
-    public function test_It_contains_zero_items_on_creation()
+    public function testItContTnsZeroItemsOnCreation(): void
     {
         $sut = $this->getCollection();
         $this->assertEquals(0, $sut->count());
     }
 
-    public function test_It_can_append_one_element()
+    public function testItCanAppendOneElement(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $this->assertEquals(1, $sut->count());
     }
 
-    public function test_It_can_append_two_elements()
+    public function testItCanAppendTwoElements(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -38,13 +38,13 @@ class CollectionTest extends TestCase
         $this->assertEquals(2, $sut->count());
     }
 
-    public function test_It_can_initialize_collection_with_a_type()
+    public function testItCanInitializeCollectionWithAType(): void
     {
-        $sut = Collection::of(CollectionTest::class);
+        $sut = Collection::ofType(__CLASS__);
         $this->assertInstanceOf(Collection::class, $sut);
     }
 
-    public function test_It_does_not_store_objects_of_a_incorrect_type()
+    public function testItDoesTotStoreObjectsOfAIncorrectType(): void
     {
         $sut = $this->getCollection();
         $this->expectException(\UnexpectedValueException::class);
@@ -53,7 +53,14 @@ class CollectionTest extends TestCase
         });
     }
 
-    public function test_It_can_store_subclasess_of_the_type()
+    public function testItCanStorePrimitiveType(): void
+    {
+        $sut = Collection::ofType('string');
+        $sut->append('me');
+        $this->assertEquals(1, $sut->count());
+    }
+
+    public function testItCanStoreSubclasessOfTheType(): void
     {
         $sut = $this->getCollection();
         $sut->append(new class extends CollectionTest
@@ -62,7 +69,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(1, $sut->count());
     }
 
-    public function test_Each_does_nothing_on_empty_collection()
+    public function testEachDoesNothingOnEmptyCollection(): void
     {
         $sut = $this->getCollection();
         $log = '';
@@ -72,7 +79,7 @@ class CollectionTest extends TestCase
         $this->assertEquals('', $log);
     }
 
-    public function test_Each_can_iterate_one_element()
+    public function testEachCanIterateOneElement(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -83,7 +90,7 @@ class CollectionTest extends TestCase
         $this->assertEquals('*', $log);
     }
 
-    public function test_Each_can_iterate_two_elements()
+    public function testEachCanIterateTwoElements(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -95,7 +102,7 @@ class CollectionTest extends TestCase
         $this->assertEquals('**', $log);
     }
 
-    public function test_Each_element_is_passed_to_function()
+    public function testEachElementIsPassedToFunction(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -107,7 +114,7 @@ class CollectionTest extends TestCase
         $this->assertEquals('**', $log);
     }
 
-    public function test_Each_method_allows_pipeline()
+    public function testEachMethodAllowsPipeline(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -118,7 +125,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    public function test_Each_method_on_empty_Collection_allows_pipeline()
+    public function testEachMethodOnEmptyCollectionAllowsPipeline(): void
     {
         $sut = $this->getCollection();
         $log = '';
@@ -128,7 +135,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    public function test_Map_method_on_empty_Collection_allows_pipeline()
+    public function testMapMethodOnEmptyCollectionAllowsPipeline(): void
     {
         $sut = $this->getCollection();
         $result = $sut->map(function (CollectionTest $element) {
@@ -137,7 +144,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    public function test_Map_method_on_empty_Collection_returns_empty_collection()
+    public function testMapMethodOnEmptyCollectionReturnsEmptyCollection(): void
     {
         $sut = $this->getCollection();
         $result = $sut->map(function (CollectionTest $element) {
@@ -147,7 +154,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    public function test_Map_method_returns_another_collection()
+    public function testMapMethodReturnsAnotherCollection(): void
     {
         $sut = $this->getCollection();
         $result = $sut->map(function (CollectionTest $element) {
@@ -156,30 +163,30 @@ class CollectionTest extends TestCase
         $this->assertNotSame($sut, $result);
     }
 
-    public function test_Map_can_map_one_element()
+    public function testMapCanMapOneElement(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $result = $sut->map(function (CollectionTest $element) {
-            return new MappedObject();
+            return new self();
         });
-        $this->assertEquals(MappedObject::class, $result->getType());
+        $this->assertEquals(self::class, $result->getType());
         $this->assertEquals(1, $result->count());
     }
 
-    public function test_Map_can_map_two_elements()
+    public function testMapCanMapTwoElements(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $sut->append($this);
         $result = $sut->map(function (CollectionTest $element) {
-            return new MappedObject();
+            return new self();
         });
-        $this->assertEquals(MappedObject::class, $result->getType());
+        $this->assertEquals(self::class, $result->getType());
         $this->assertEquals(2, $result->count());
     }
 
-    public function test_Filter_returns_a_Collection()
+    public function testFilterReturnsACollection(): void
     {
         $sut = $this->getCollection();
         $result = $sut->filter(function (CollectionTest $element) {
@@ -188,7 +195,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    public function test_Filter_returns_a_Collection_that_is_not_the_same()
+    public function testFilterReturnsACollectionThatIsNotTheSame(): void
     {
         $sut = $this->getCollection();
         $result = $sut->filter(function (CollectionTest $element) {
@@ -197,16 +204,16 @@ class CollectionTest extends TestCase
         $this->assertNotSame($sut, $result);
     }
 
-    public function test_Filter_returns_a_Collection_with_the_same_type_of_objects()
+    public function testFilterReturnsACollectionWithTheSameTypeOfObjects(): void
     {
         $sut = $this->getCollection();
         $result = $sut->filter(function (CollectionTest $element) {
             return false;
         });
-        $this->assertEquals(CollectionTest::class, $result->getType());
+        $this->assertEquals(__CLASS__, $result->getType());
     }
 
-    public function test_Filter_include_element_if_filter_function_returns_true()
+    public function testFilterIncludeElementIfFilterFunctionReturnsTrue(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -216,7 +223,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(1, $result->count());
     }
 
-    public function test_Filter_does_not_include_element_if_filter_function_returns_false()
+    public function testFilterDoesNotIncludeElementIfFilterFunctionReturnsFalse(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -226,7 +233,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(0, $result->count());
     }
 
-    public function test_Filter_iterates_all_elements_in_collection()
+    public function testFilterIteratesAllElementsInCollection(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -237,7 +244,7 @@ class CollectionTest extends TestCase
         $this->assertEquals($sut, $result);
     }
 
-    public function test_GetBy_throws_exception_on_empty_collection()
+    public function testGetByThrowsExceptionOnEmptyCollection(): void
     {
         $sut = $this->getCollection();
         $this->expectException(\UnderflowException::class);
@@ -246,7 +253,7 @@ class CollectionTest extends TestCase
         });
     }
 
-    public function test_GetBy_throws_exception_if_element_is_not_found()
+    public function testGetByThrowsExceptionIfElementIsNotFound(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -256,7 +263,7 @@ class CollectionTest extends TestCase
         });
     }
 
-    public function test_GetBy_returns_element_if_found()
+    public function testGetByReturnsElementIfFound(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -266,7 +273,7 @@ class CollectionTest extends TestCase
         $this->assertSame($this, $result);
     }
 
-    public function test_GetBy_selects_the_right_element()
+    public function testGetBySelectsTheRightElement(): void
     {
         $sut = $this->getCollection();
         $target = clone $this;
@@ -279,16 +286,16 @@ class CollectionTest extends TestCase
         $this->assertSame($target, $result);
     }
 
-    public function test_Reduce_returns_initial_value_for_empty_collection()
+    public function testReduceReturnsInitialValueForEmptyCollection(): void
     {
         $sut = $this->getCollection();
         $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
-           return $acumulator + 1;
+            return $acumulator + 1;
         }, 0);
         $this->assertEquals(0, $result);
     }
 
-    public function test_Reduce_initial_can_be_any_type()
+    public function testReduceInitialCanBeAnyType(): void
     {
         $sut = $this->getCollection();
         $result = $sut->reduce(function (CollectionTest $element, $acumulator) {
@@ -297,7 +304,7 @@ class CollectionTest extends TestCase
         $this->assertEquals("", $result);
     }
 
-    public function test_Reduce_applies_reduce_function_to_one_element()
+    public function testReduceAppliesReduceFunctionToOneElement(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -307,7 +314,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
-    public function test_Reduce_applies_reduce_function_to_several_elements()
+    public function testReduceAppliesReduceFunctionToSeveralElements(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
@@ -318,21 +325,21 @@ class CollectionTest extends TestCase
         $this->assertEquals(2, $result);
     }
 
-    public function test_Collect_array_uses_first_element_to_instance_collection()
+    public function testCollectArrayUsesFirstElementToInstanceCollection(): void
     {
         $sut = Collection::collect([
             $this
         ]);
-        $this->assertEquals(CollectionTest::class, $sut->getType());
+        $this->assertEquals(__CLASS__, $sut->getType());
     }
 
-    public function test_Collect_empty_array_fails_with_exception()
+    public function testCollectEmptyArrayFailsWithException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         Collection::collect([]);
     }
 
-    public function test_Collect_array_with_one_element_populates_collection()
+    public function testCollectArrayWithOneElementPopulatesCollection(): void
     {
         $sut = Collection::collect([
             $this
@@ -340,7 +347,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(1, $sut->count());
     }
 
-    public function test_Collect_array_with_several_elements_populates_collection()
+    public function testCollectArrayWithSeveralElementsPopulatesCollection(): void
     {
         $sut = Collection::collect([
             $this,
@@ -349,7 +356,7 @@ class CollectionTest extends TestCase
         $this->assertEquals(2, $sut->count());
     }
 
-    public function test_Invalid_type_in_array_throws_exception()
+    public function testInvalidTypeInArrayThrowsException(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         Collection::collect([
@@ -358,64 +365,59 @@ class CollectionTest extends TestCase
         ]);
     }
 
-    public function test_Empty_Collection_maps_to_empty_array()
+    public function testEmptyCollectionMapsToEmptyArray(): void
     {
         $sut = $this->getCollection();
         $this->assertEquals([], $sut->toArray());
     }
 
-    public function test_Collection_can_be_returned_as_array()
+    public function testCollectionCanBeReturnedAsArray(): void
     {
         $sample = [$this];
         $sut = Collection::collect($sample);
         $this->assertEquals($sample, $sut->toArray());
     }
 
-    public function test_Collection_can_be_mapped_to_array()
+    public function testCollectionCanBeMappedToArray(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
-        $this->assertEquals(['mapped'], $sut->toArray(function(CollectionTest $element) {
+        $this->assertEquals(['mapped'], $sut->toArray(function (CollectionTest $element) {
             return 'mapped';
         }));
     }
 
-    public function test_Collection_with_two_elements_can_be_mapped_to_array()
+    public function testCollectionWithTwoElementsCanBeMappedToArray(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $sut->append($this);
-        $this->assertEquals(['mapped', 'mapped'], $sut->toArray(function(CollectionTest $element) {
+        $this->assertEquals(['mapped', 'mapped'], $sut->toArray(function (CollectionTest $element) {
             return 'mapped';
         }));
     }
 
-    public function test_Collection_getType()
+    public function testCollectionGetType(): void
     {
-        $sut = Collection::of(CollectionTest::class);
-        $this->assertEquals(CollectionTest::class, $sut->getType());
+        $sut = Collection::ofType(__CLASS__);
+        $this->assertEquals(__CLASS__, $sut->getType());
     }
 
-    public function test_Collection_is_empty()
+    public function testCollectionIsEmpty(): void
     {
         $sut = $this->getCollection();
         $this->assertTrue($sut->isEmpty());
     }
 
-    public function test_Collection_is_not_empty()
+    public function testCollectionIsNotEmpty(): void
     {
         $sut = $this->getCollection();
         $sut->append($this);
         $this->assertFalse($sut->isEmpty());
     }
 
-    public function isTarget()
+    public function isTarget(): bool
     {
         return isset($this->target);
     }
-}
-
-class MappedObject
-{
-
 }
